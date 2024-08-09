@@ -79,7 +79,7 @@ def check_enemy():
             ec = in_range(ec ,0,maxc - 1)
             enemy[i] = (el,ec)
         if el == player_l and ec == player_c:
-            stdscr.addstr(maxl//2,maxc//2,"YOU ARE DIE LOOSERRRRRR")q
+            stdscr.addstr(maxl//2,maxc//2,"YOU ARE DIE LOOSERRRRRR")
             stdscr.refresh()
             time.sleep(3)
             playing = False
