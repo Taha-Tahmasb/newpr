@@ -1,5 +1,6 @@
 import curses
 import random 
+import time 
 stdscr = curses.initscr()
 maxl = curses.LINES - 1 
 maxc = curses.COLS
@@ -9,6 +10,7 @@ stdscr.keypad(True)
 stdscr.nodelay(True)
 world = [] 
 food = []
+enemy = []
 score = 0 
 player_l = player_c = 0  
 def random_place():
@@ -31,7 +33,9 @@ def init():
         fl ,fc = random_place()
         fa = random.randint(1000,10000)
         food.append((fl,fc,fa))
-
+    for i in range(3):
+        el , ec = random_place()
+        enemy.append((el,ec))
 def in_range(a,min,max):
     if a < min :
         return min 
@@ -56,24 +60,43 @@ def move(c):
 
 def check_food():
     global food , score
-    for f in food :
-        fl , fc , fa = f
-        if fl == player_l and fc == player_c :
-            score += 10 
-            food.remove(f)
-            world[fl][fc] = ord(" ")
-            fa = random.randint(1000,10000)
-            food.append((fl,fc,fa))
-
-
+    for i in range(len(food)):
+        fl , fc , fa = food[i]
+        if fl == player_l and fc == player_c:
+            score += 10
+            nfl , nfc = random_place()
+            nfa = random.randint(1000,10000)
+            food[i] = (nfl,nfc,nfa)
+def check_enemy():
+    global playing 
+    global enemy 
+    for i in range(len(enemy)):
+        el , ec = enemy[i]
+        if random.random() < 0.5:
+            el += random.choice([0,-1,1])
+            ec += random.choice([0,-1,1])
+            el = in_range(el , 0,maxl - 1)
+            ec = in_range(ec ,0,maxc - 1)
+            enemy[i] = (el,ec)
+        if el == player_l and ec == player_c:
+            stdscr.addstr(maxl//2,maxc//2,"YOU ARE DIE LOOSERRRRRR")q
+            stdscr.refresh()
+            time.sleep(3)
+            playing = False
+            break
 def draw():
     for i in range(maxl):
         for j in range(maxc):
             stdscr.addch(i, j, world[i][j])
     for c in food:
         fl , fc , fa = c
-        stdscr.addch(fl, fc, "🍎")
+        stdscr.addch(fl, fc, "🍍")
+    for c in enemy:
+        el , ec = c 
+        stdscr.addch(el, ec, "🐍")
     stdscr.addch(player_l, player_c, "🚀")
+    stdscr.addstr(1, 1, "Score : " + str(score))
+
     stdscr.refresh()
 init()
 playing = True 
@@ -87,8 +110,8 @@ while playing:
     elif c == 'q':
         playing = False
     check_food()
+    check_enemy()
+    time.sleep(0.05)
     draw()
 
 
-stdscr.clear()
-stdscr.refresh()
