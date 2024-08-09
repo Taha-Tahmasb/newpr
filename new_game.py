@@ -13,6 +13,7 @@ food = []
 enemy = []
 score = 0 
 player_l = player_c = 0  
+curses.curs_set(False)
 def random_place():
     a = random.randint(0,maxl) 
     b = random.randint(0,maxc)
@@ -73,8 +74,14 @@ def check_enemy():
     for i in range(len(enemy)):
         el , ec = enemy[i]
         if random.random() < 0.5:
-            el += random.choice([0,-1,1])
-            ec += random.choice([0,-1,1])
+            if el > player_l:
+                el -= 1
+            elif el < player_l:
+                el += 1
+            elif ec > player_c:
+                ec -= 1
+            elif ec < player_c:
+                ec += 1
             el = in_range(el , 0,maxl - 1)
             ec = in_range(ec ,0,maxc - 1)
             enemy[i] = (el,ec)
