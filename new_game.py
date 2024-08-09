@@ -1,4 +1,5 @@
 import curses
+import random 
 stdscr = curses.initscr()
 maxl = curses.LINES - 1 
 maxc = curses.COLS
@@ -12,7 +13,7 @@ def init():
     for i in range(maxl):
         world.append([])
         for j in range(maxc):
-            world[i].append(ord("."))
+            world[i].append(ord(" ") if random.random() > 0.03 else ord("."))
 def draw():
     for i in range(maxl):
         for j in range(maxc):
